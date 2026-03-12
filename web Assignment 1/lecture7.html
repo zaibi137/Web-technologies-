@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 7: DOM Manipulation - Web Technologies</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Web Technologies</h1>
+            <p class="subtitle">Lecture 7: DOM Manipulation</p>
+        </header>
+        
+        <main class="lecture-content">
+            <h1>DOM Manipulation</h1>
+            
+            <h2>Introduction</h2>
+            <p>The Document Object Model (DOM) is a programming interface for web documents. It represents the page so that programs can change the document structure, style, and content. DOM manipulation allows JavaScript to interact dynamically with HTML elements.</p>
+            
+            <h2>Key Concepts</h2>
+            <ul>
+                <li><strong>Selecting Elements:</strong> Use methods like getElementById, getElementsByClassName, getElementsByTagName, querySelector, and querySelectorAll to find elements.</li>
+                <li><strong>Modifying Content:</strong> Use innerHTML, textContent, and innerText to change element content.</li>
+                <li><strong>Modifying Styles:</strong> Access the style property to change CSS properties directly, or use classList to add, remove, and toggle CSS classes.</li>
+                <li><strong>Creating Elements:</strong> Use document.createElement to create new elements, then appendChild or insertBefore to add them to the DOM.</li>
+                <li><strong>Removing Elements:</strong> Use removeChild or the newer remove() method to delete elements from the DOM.</li>
+                <li><strong>Event Handling:</strong> Add event listeners using addEventListener to respond to user interactions like clicks, keypresses, and form submissions.</li>
+            </ul>
+            
+            <h2>Best Practices</h2>
+            <p>Cache DOM queries to avoid repeated lookups. Use event delegation for better performance with many elements. Minimize reflows and repaints by batching DOM changes. Use CSS classes for style changes instead of modifying individual style properties.</p>
+            
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 Web Technologies Course. All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
+

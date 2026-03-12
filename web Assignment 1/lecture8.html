@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 8: Web APIs - Web Technologies</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Web Technologies</h1>
+            <p class="subtitle">Lecture 8: Web APIs</p>
+        </header>
+        
+        <main class="lecture-content">
+            <h1>Web APIs</h1>
+            
+            <h2>Introduction</h2>
+            <p>Web APIs (Application Programming Interfaces) are interfaces that allow web applications to interact with external services, servers, and browser features. They extend the capabilities of JavaScript and enable powerful web applications.</p>
+            
+            <h2>Key Concepts</h2>
+            <ul>
+                <li><strong>Fetch API:</strong> Modern Promise-based interface for making HTTP requests to servers. Supports GET, POST, PUT, DELETE methods with async/await syntax.</li>
+                <li><strong>JSON:</strong> JavaScript Object Notation - the most common data format for API responses. Parse with JSON.parse() and stringify with JSON.stringify().</li>
+                <li><strong>Storage APIs:</strong> localStorage and sessionStorage for storing data in the browser. localStorage persists while sessionStorage clears on tab close.</li>
+                <li><strong>Geolocation API:</strong> Access the user's geographic position for location-based services and map integrations.</li>
+                <li><strong>Web Workers:</strong> Run JavaScript in background threads to perform intensive tasks without blocking the main thread and UI.</li>
+                <li><strong>Push API:</strong> Enable web applications to receive push notifications from servers, even when the app is not active.</li>
+            </ul>
+            
+            <h2>Best Practices</h2>
+            <p>Always handle errors in API calls using try-catch blocks or .catch(). Validate and sanitize data from external APIs. Use loading states to provide feedback during async operations. Consider security - never expose sensitive API keys in client-side code.</p>
+            
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </main>
+        
+        <footer>
+            <p>&copy; 2024 Web Technologies Course. All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
+
