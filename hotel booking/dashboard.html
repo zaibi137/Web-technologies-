@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Opal Haven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { background: radial-gradient(circle at top, rgba(245, 214, 128, 0.12), transparent 30%), linear-gradient(180deg, #020617, #0b1224); }
+      .glass-panel { background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(20px); }
+    </style>
+  </head>
+  <body class="min-h-screen text-slate-100">
+    <header class="sticky top-0 z-50 border-b border-slate-700/60 bg-slate-950/95 backdrop-blur-xl">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
+        <a href="index.html" class="text-2xl font-bold uppercase tracking-[0.36em] text-amber-200">Opal Haven</a>
+        <div class="hidden items-center gap-4 md:flex">
+          <a href="index.html" class="text-sm text-slate-200 transition hover:text-white">Home</a>
+          <a href="rooms.html" class="text-sm text-slate-200 transition hover:text-white">Rooms</a>
+          <a href="checkout.html" class="text-sm text-slate-200 transition hover:text-white">Checkout</a>
+          <a id="dashboard-link" href="dashboard.html" class="hidden text-sm text-white">My Bookings</a>
+        </div>
+        <div class="hidden items-center gap-3 md:flex">
+          <span id="nav-user-welcome" class="hidden rounded-full bg-slate-900/80 px-4 py-2 text-sm text-slate-200"></span>
+          <a id="login-link" href="login.html" class="text-sm text-slate-200 transition hover:text-white">Login</a>
+          <a id="signup-link" href="signup.html" class="rounded-full border border-amber-300 px-4 py-2 text-sm font-semibold text-amber-200 transition hover:bg-amber-200/10">Signup</a>
+          <button id="logout-button" class="hidden rounded-full bg-amber-300 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-200">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+      <section class="glass-panel rounded-[2.5rem] border border-slate-700/70 p-10 shadow-2xl shadow-slate-950/20">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p class="text-sm uppercase tracking-[0.32em] text-amber-200">My reservations</p>
+            <h1 class="mt-3 text-4xl font-semibold text-white">Bookings saved to your account.</h1>
+          </div>
+          <p class="max-w-xl text-slate-400">Review your reservations and cancel them with one click. Your data stays in LocalStorage.</p>
+        </div>
+      </section>
+
+      <section id="dashboard-message" class="mt-10 rounded-[2rem] border border-slate-700/70 bg-slate-950/80 p-10 text-center text-slate-400 shadow-2xl shadow-slate-950/20">
+        <p class="text-xl font-semibold text-white">No bookings yet.</p>
+        <p class="mt-3">Reserve a suite from the Rooms page to see it here.</p>
+      </section>
+
+      <section id="dashboard-bookings" class="mt-10 grid gap-6"></section>
+
+      <section class="mt-16 space-y-6">
+        <div>
+          <p class="text-sm uppercase tracking-[0.32em] text-amber-200">Browse our collection</p>
+          <h2 class="mt-3 text-4xl font-semibold text-white">Available Suites for You</h2>
+          <p class="mt-2 text-slate-400">Browse and book any of our luxury rooms directly from your dashboard.</p>
+        </div>
+        <div id="available-rooms" class="grid gap-8 lg:grid-cols-3"></div>
+      </section>
+    </main>
+
+    <script src="main.js"></script>
+  </body>
+</html>
