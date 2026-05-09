@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Task extends Model
+{
+    // This allows the Controller to save data into these columns
+    protected $fillable = ['title', 'description', 'due_date', 'priority', 'status'];
+}
