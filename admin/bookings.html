@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookings | Opal Haven Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="sidebar-header">
+                    <h2 class="text-center">Opal Haven</h2>
+                    <p class="text-center text-muted">Admin Panel</p>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="hotels.html"><i class="bi bi-building"></i> Hotels</a></li>
+                    <li class="nav-item"><a class="nav-link" href="rooms.html"><i class="bi bi-door-closed"></i> Rooms</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="bookings.html"><i class="bi bi-calendar-check"></i> Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="users.html"><i class="bi bi-people"></i> Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="reviews.html"><i class="bi bi-star"></i> Reviews</a></li>
+                    <li class="nav-item mt-5"><button class="nav-link btn btn-link" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button></li>
+                </ul>
+            </nav>
+
+            <main class="col-md-9 col-lg-10 px-md-4 content">
+                <div class="topbar d-flex justify-content-between align-items-center">
+                    <h1>Bookings</h1>
+                </div>
+
+                <div id="alertContainer"></div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <select id="statusFilter" class="form-control form-control-sm" onchange="loadBookings()">
+                                    <option value="">All Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" id="searchGuest" class="form-control form-control-sm" placeholder="Search by guest..." onkeyup="loadBookings()" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="bookingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Guest</th>
+                                    <th>Hotel</th>
+                                    <th>Room</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="9" class="text-center text-muted py-3">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Booking Details Modal -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Booking Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="bookingDetails"></div>
+                    <div class="mt-3">
+                        <label class="form-label">Update Status</label>
+                        <select id="bookingStatus" class="form-control">
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="updateBookingStatus()">Update Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        let currentBookingId = null;
+
+        async function loadBookings() {
+            const status = document.getElementById('statusFilter').value;
+            const guest  = document.getElementById('searchGuest').value;
+
+            const tbody = document.querySelector('#bookingsTable tbody');
+            tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-3">Loading...</td></tr>';
+
+            let endpoint = '/bookings';
+            if (status) endpoint += '?status=' + status;
+
+            // forceRefresh so cached data never hides new user bookings
+            const data = await apiRequest(endpoint, { forceRefresh: true });
+
+            if (!data) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center text-danger py-3">Failed to load bookings. Check your token.</td></tr>';
+                return;
+            }
+
+            // Handle Laravel paginator shape: { data: [], current_page, total, ... }
+            let bookings = Array.isArray(data) ? data
+                         : Array.isArray(data.data) ? data.data
+                         : (data.data && Array.isArray(data.data.data)) ? data.data.data
+                         : [];
+
+            // Safe guest search — guard against null user relation
+            if (guest) {
+                bookings = bookings.filter(function(b) {
+                    return (b.user && b.user.name && b.user.name.toLowerCase().includes(guest.toLowerCase())) ||
+                           (b.user && b.user.email && b.user.email.toLowerCase().includes(guest.toLowerCase()));
+                });
+            }
+
+            tbody.innerHTML = '';
+
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-3">No bookings found</td></tr>';
+                return;
+            }
+
+            bookings.forEach(function(booking) {
+                const row = document.createElement('tr');
+                const guestName  = (booking.user  && booking.user.name)  ? booking.user.name  : '—';
+                const hotelName  = (booking.hotel && booking.hotel.name) ? booking.hotel.name : '—';
+                const roomName   = (booking.room  && booking.room.name)  ? booking.room.name  : '—';
+                row.innerHTML =
+                    '<td>#' + booking.id + '</td>' +
+                    '<td>' + guestName + '</td>' +
+                    '<td>' + hotelName + '</td>' +
+                    '<td>' + roomName + '</td>' +
+                    '<td>' + formatDate(booking.check_in_date) + '</td>' +
+                    '<td>' + formatDate(booking.check_out_date) + '</td>' +
+                    '<td>' + formatCurrency(booking.total_price) + '</td>' +
+                    '<td>' + getStatusBadge(booking.status) + '</td>' +
+                    '<td><button class="btn btn-sm btn-info" onclick="viewBooking(' + booking.id + ')"><i class="bi bi-eye"></i> Details</button></td>';
+                tbody.appendChild(row);
+            });
+        }
+
+        async function viewBooking(bookingId) {
+            // viewBooking receives the raw booking id — fetch fresh detail with forceRefresh
+            const data = await apiRequest('/bookings/' + bookingId, { forceRefresh: true });
+            if (!data) return;
+
+            // API may wrap in { booking: {} } or return the object directly
+            const booking = data.booking || data;
+
+            currentBookingId = booking.id;
+            document.getElementById('bookingStatus').value = booking.status || 'pending';
+
+            const guestName  = booking.user  ? booking.user.name  + ' (' + booking.user.email + ')' : '—';
+            const hotelName  = booking.hotel ? booking.hotel.name : '—';
+            const roomName   = booking.room  ? booking.room.name  : '—';
+            const specialReq = booking.special_requests
+                ? '<div class="mb-3"><strong>Special Requests:</strong> ' + booking.special_requests + '</div>'
+                : '';
+
+            document.getElementById('bookingDetails').innerHTML =
+                '<div class="mb-3"><strong>Booking ID:</strong> #' + booking.id + '</div>' +
+                '<div class="mb-3"><strong>Guest:</strong> ' + guestName + '</div>' +
+                '<div class="mb-3"><strong>Hotel:</strong> ' + hotelName + '</div>' +
+                '<div class="mb-3"><strong>Room:</strong> ' + roomName + '</div>' +
+                '<div class="row">' +
+                    '<div class="col-6 mb-3"><strong>Check-in:</strong> ' + formatDate(booking.check_in_date) + '</div>' +
+                    '<div class="col-6 mb-3"><strong>Check-out:</strong> ' + formatDate(booking.check_out_date) + '</div>' +
+                '</div>' +
+                '<div class="mb-3"><strong>Guests:</strong> ' + (booking.guests || '—') + '</div>' +
+                '<div class="mb-3"><strong>Total Price:</strong> ' + formatCurrency(booking.total_price) + '</div>' +
+                specialReq +
+                '<div class="mb-3"><strong>Current Status:</strong> ' + getStatusBadge(booking.status) + '</div>';
+
+            const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            modal.show();
+        }
+
+        async function updateBookingStatus() {
+            const newStatus = document.getElementById('bookingStatus').value;
+
+            const result = await apiRequest(`/bookings/${currentBookingId}/status`, {
+                method: 'PATCH',
+                body: JSON.stringify({ status: newStatus }),
+            });
+
+            if (result) {
+                showAlert('Booking status updated successfully', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
+                loadBookings();
+            }
+        }
+
+        // Initialize on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAdminAuth()) return;
+            loadBookings();
+        });
+    </script>
+</body>
+</html>

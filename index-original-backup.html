@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Opal Haven | Luxury Hotel Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { background: radial-gradient(circle at top, rgba(245, 214, 128, 0.12), transparent 30%), linear-gradient(180deg, #020617, #0f172a); }
+      .glass-panel { background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(20px); }
+    </style>
+  </head>
+  <body class="min-h-screen text-slate-100">
+    <header class="sticky top-0 z-50 border-b border-slate-700/60 bg-slate-950/95 backdrop-blur-xl">
+      <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
+        <a href="index.html" class="text-2xl font-bold uppercase tracking-[0.36em] text-amber-200">Opal Haven</a>
+        <div class="hidden items-center gap-4 md:flex">
+          <a href="index.html" class="text-sm text-slate-200 transition hover:text-white">Home</a>
+          <a href="rooms.html" class="text-sm text-slate-200 transition hover:text-white">Rooms</a>
+          <a href="checkout.html" class="text-sm text-slate-200 transition hover:text-white">Checkout</a>
+          <a id="dashboard-link" href="dashboard.html" class="hidden text-sm text-slate-200 transition hover:text-white">My Bookings</a>
+        </div>
+        <div class="hidden items-center gap-3 md:flex">
+          <span id="nav-user-welcome" class="hidden rounded-full bg-slate-900/80 px-4 py-2 text-sm text-slate-200"></span>
+          <a id="login-link" href="login.html" class="text-sm text-slate-200 transition hover:text-white">Login</a>
+          <a id="signup-link" href="signup.html" class="rounded-full border border-amber-300 px-4 py-2 text-sm font-semibold text-amber-200 transition hover:bg-amber-200/10">Signup</a>
+          <button id="logout-button" class="hidden rounded-full bg-amber-300 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-amber-200">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+      <section class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div class="space-y-8">
+          <div class="space-y-4">
+            <h1 class="max-w-3xl text-5xl font-semibold leading-tight tracking-[-0.04em] text-white sm:text-6xl">Book your upscale stay in a suite that feels custom-made.</h1>
+            <p class="max-w-2xl text-lg leading-8 text-slate-300">Explore our curated room collection, reserve with confidence, and keep your itinerary in one polished booking experience.</p>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 max-w-md">
+            <div class="rounded-[1.5rem] bg-slate-900/60 border border-slate-700/50 p-4 text-center">
+              <p class="text-2xl font-bold text-amber-200">6+</p>
+              <p class="text-xs text-slate-400 mt-1">Luxury Suites</p>
+            </div>
+            <div class="rounded-[1.5rem] bg-slate-900/60 border border-slate-700/50 p-4 text-center">
+              <p class="text-2xl font-bold text-amber-200">4.9★</p>
+              <p class="text-xs text-slate-400 mt-1">Guest Rating</p>
+            </div>
+            <div class="rounded-[1.5rem] bg-slate-900/60 border border-slate-700/50 p-4 text-center">
+              <p class="text-2xl font-bold text-amber-200">500+</p>
+              <p class="text-xs text-slate-400 mt-1">Happy Guests</p>
+            </div>
+          </div>
+
+          <p class="inline-flex items-center gap-2 rounded-full bg-amber-200/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-amber-200 shadow-sm shadow-amber-200/10">Boutique Luxury</p>
+          <div class="glass-panel rounded-[2rem] border border-slate-700/70 p-8 shadow-2xl shadow-slate-950/20">
+            <h2 class="text-xl font-semibold text-amber-200">Search availability</h2>
+            <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <label class="space-y-2 text-sm text-slate-300">
+                <span>Check-in</span>
+                <input id="hero-checkin" type="date" class="w-full rounded-3xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none ring-1 ring-slate-700 transition focus:ring-amber-300" />
+              </label>
+              <label class="space-y-2 text-sm text-slate-300">
+                <span>Check-out</span>
+                <input id="hero-checkout" type="date" class="w-full rounded-3xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none ring-1 ring-slate-700 transition focus:ring-amber-300" />
+              </label>
+              <label class="space-y-2 text-sm text-slate-300">
+                <span>Guests</span>
+                <select id="hero-guests" class="w-full rounded-3xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-slate-100 outline-none ring-1 ring-slate-700 transition focus:ring-amber-300">
+                  <option>1 guest</option>
+                  <option>2 guests</option>
+                  <option>3 guests</option>
+                  <option>4 guests</option>
+                </select>
+              </label>
+              <button id="hero-search" class="rounded-3xl bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-amber-400/20 transition hover:bg-amber-300">Explore rooms</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative overflow-hidden rounded-[3rem] border border-white/10 bg-slate-950/80 p-8 shadow-2xl shadow-slate-950/30">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.18),transparent_32%)]"></div>
+          <div class="relative z-10 space-y-6">
+            <div class="flex items-center justify-between gap-4 rounded-3xl bg-slate-900/80 px-6 py-5">
+              <div>
+                <p class="text-sm uppercase tracking-[0.32em] text-amber-200">Featured collection</p>
+                <h2 class="mt-2 text-3xl font-semibold text-white">Rooms crafted for every escape.</h2>
+              </div>
+              <span class="rounded-3xl bg-amber-200 px-4 py-3 text-sm font-semibold text-slate-950">Opulent</span>
+            </div>
+            <div id="featured-rooms" class="grid gap-5"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Rest of the page remains the same -->
+    </main>
+
+    <script src="main.js"></script>
+  </body>
+</html>

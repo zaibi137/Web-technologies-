@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rooms | Opal Haven Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="sidebar-header">
+                    <h2 class="text-center">Opal Haven</h2>
+                    <p class="text-center text-muted">Admin Panel</p>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="hotels.html"><i class="bi bi-building"></i> Hotels</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="rooms.html"><i class="bi bi-door-closed"></i> Rooms</a></li>
+                    <li class="nav-item"><a class="nav-link" href="bookings.html"><i class="bi bi-calendar-check"></i> Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="users.html"><i class="bi bi-people"></i> Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="reviews.html"><i class="bi bi-star"></i> Reviews</a></li>
+                    <li class="nav-item mt-5"><button class="nav-link btn btn-link" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button></li>
+                </ul>
+            </nav>
+
+            <main class="col-md-9 col-lg-10 px-md-4 content">
+                <div class="topbar d-flex justify-content-between align-items-center">
+                    <h1>Rooms</h1>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#roomModal" onclick="resetRoomForm()">
+                        <i class="bi bi-plus"></i> Add Room
+                    </button>
+                </div>
+
+                <div id="alertContainer"></div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-0">All Rooms</h5>
+                            </div>
+                            <div class="col-md-6">
+                                <select id="hotelFilter" class="form-control form-control-sm" onchange="loadRooms()">
+                                    <option value="">All Hotels</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="roomsTable">
+                            <thead>
+                                <tr>
+                                    <th>Room Name</th>
+                                    <th>Hotel</th>
+                                    <th>Type</th>
+                                    <th>Price/Night</th>
+                                    <th>Max Guests</th>
+                                    <th>Available</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="7" class="text-center text-muted py-3">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Room Modal -->
+    <div class="modal fade" id="roomModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roomModalTitle">Add Room</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="roomForm">
+                        <div class="mb-3">
+                            <label class="form-label">Hotel</label>
+                            <select id="roomHotel" class="form-control" required>
+                                <option value="">Select Hotel</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Room Name</label>
+                            <input type="text" id="roomName" class="form-control" required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Room Type</label>
+                                <input type="text" id="roomType" class="form-control" placeholder="e.g., Deluxe, Suite" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Price per Night</label>
+                                <input type="number" id="roomPrice" class="form-control" min="0" step="0.01" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Max Guests</label>
+                                <input type="number" id="roomGuests" class="form-control" min="1" value="2" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Available</label>
+                                <select id="roomAvailable" class="form-control">
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea id="roomDescription" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amenities (comma-separated)</label>
+                            <input type="text" id="roomAmenities" class="form-control" placeholder="WiFi, AC, TV..." />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveRoom()">Save Room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        let currentRoomId = null;
+        let allHotels = [];
+
+        async function loadHotelsForFilter() {
+            const data = await apiRequest('/hotels');
+            if (!data || !data.data) return;
+
+            allHotels = data.data;
+            const hotelFilter = document.getElementById('hotelFilter');
+            const roomHotel = document.getElementById('roomHotel');
+
+            hotelFilter.innerHTML = '<option value="">All Hotels</option>';
+            roomHotel.innerHTML = '<option value="">Select Hotel</option>';
+
+            data.data.forEach(hotel => {
+                hotelFilter.innerHTML += `<option value="${hotel.id}">${hotel.name}</option>`;
+                roomHotel.innerHTML += `<option value="${hotel.id}">${hotel.name}</option>`;
+            });
+        }
+
+        async function loadRooms() {
+            const hotelId = document.getElementById('hotelFilter').value;
+            let endpoint = '/hotels/1/rooms';
+
+            // If a specific hotel is selected, fetch that hotel's rooms
+            if (hotelId) {
+                endpoint = `/hotels/${hotelId}/rooms`;
+            } else {
+                // Load all rooms from all hotels
+                const response = await apiRequest('/hotels');
+                if (!response || !response.data) return;
+
+                const tbody = document.querySelector('#roomsTable tbody');
+                tbody.innerHTML = '';
+                let allRooms = [];
+
+                for (const hotel of response.data) {
+                    const hotelRooms = await apiRequest(`/hotels/${hotel.id}/rooms`);
+                    if (hotelRooms && hotelRooms.data) {
+                        allRooms = allRooms.concat(hotelRooms.data);
+                    }
+                }
+
+                if (allRooms.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">No rooms found</td></tr>';
+                    return;
+                }
+
+                displayRooms(allRooms);
+                return;
+            }
+
+            const data = await apiRequest(endpoint);
+            if (!data || !data.data) return;
+
+            displayRooms(data.data);
+        }
+
+        function displayRooms(rooms) {
+            const tbody = document.querySelector('#roomsTable tbody');
+            tbody.innerHTML = '';
+
+            if (rooms.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">No rooms found</td></tr>';
+                return;
+            }
+
+            rooms.forEach(room => {
+                const row = document.createElement('tr');
+                const availableBadge = room.is_available ? '<span class="badge bg-success">Available</span>' : '<span class="badge bg-danger">Not Available</span>';
+                row.innerHTML = `
+                    <td>${room.name}</td>
+                    <td>${room.hotel?.name || '-'}</td>
+                    <td>${room.room_type || '-'}</td>
+                    <td>${formatCurrency(room.price_per_night)}</td>
+                    <td>${room.max_guests}</td>
+                    <td>${availableBadge}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="editRoom(${room.id})">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteRoom(${room.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function resetRoomForm() {
+            currentRoomId = null;
+            document.getElementById('roomForm').reset();
+            document.getElementById('roomModalTitle').textContent = 'Add Room';
+            document.getElementById('roomAvailable').value = '1';
+        }
+
+        async function editRoom(roomId) {
+            const room = await apiRequest(`/rooms/${roomId}`);
+            if (!room) return;
+
+            currentRoomId = room.id;
+            document.getElementById('roomHotel').value = room.hotel_id;
+            document.getElementById('roomName').value = room.name;
+            document.getElementById('roomType').value = room.room_type || '';
+            document.getElementById('roomPrice').value = room.price_per_night;
+            document.getElementById('roomGuests').value = room.max_guests;
+            document.getElementById('roomAvailable').value = room.is_available ? '1' : '0';
+            document.getElementById('roomDescription').value = room.description || '';
+            document.getElementById('roomAmenities').value = (room.amenities || []).join(', ');
+
+            document.getElementById('roomModalTitle').textContent = 'Edit Room';
+            const modal = new bootstrap.Modal(document.getElementById('roomModal'));
+            modal.show();
+        }
+
+        async function saveRoom() {
+            try {
+                // Validation
+                const hotelSelect = document.getElementById('roomHotel');
+                if (!hotelSelect.value) {
+                    showAlert('Please select a hotel', 'warning');
+                    hotelSelect.focus();
+                    return;
+                }
+
+                const roomNameInput = document.getElementById('roomName');
+                if (!roomNameInput.value.trim()) {
+                    showAlert('Room name is required', 'warning');
+                    roomNameInput.focus();
+                    return;
+                }
+
+                const amenitiesStr = document.getElementById('roomAmenities').value;
+                const amenities = amenitiesStr ? amenitiesStr.split(',').map(a => a.trim()).filter(a => a) : [];
+
+                const data = {
+                    hotel_id: parseInt(hotelSelect.value),
+                    name: roomNameInput.value.trim(),
+                    room_type: document.getElementById('roomType').value.trim(),
+                    price_per_night: parseFloat(document.getElementById('roomPrice').value),
+                    max_guests: parseInt(document.getElementById('roomGuests').value),
+                    is_available: document.getElementById('roomAvailable').value === '1',
+                    description: document.getElementById('roomDescription').value.trim(),
+                    amenities: amenities,
+                };
+
+                console.log('Saving room with data:', data);
+
+                const endpoint = currentRoomId ? `/rooms/${currentRoomId}` : '/rooms';
+                const method = currentRoomId ? 'PUT' : 'POST';
+
+                const result = await apiRequest(endpoint, {
+                    method: method,
+                    body: JSON.stringify(data),
+                });
+
+                if (result && (result.message || result.room)) {
+                    showAlert(result.message || (currentRoomId ? 'Room updated successfully' : 'Room created successfully'), 'success');
+                    const modalEl = document.getElementById('roomModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) {
+                        modal.hide();
+                    }
+                    resetRoomForm();
+                    loadRooms();
+                } else if (!result) {
+                    console.error('Failed to save room');
+                }
+            } catch (error) {
+                console.error('Save room error:', error);
+                showAlert('An unexpected error occurred: ' + error.message, 'danger');
+            }
+        }
+
+        async function deleteRoom(roomId) {
+            if (!confirm('Are you sure you want to delete this room?')) return;
+
+            const result = await apiRequest(`/rooms/${roomId}`, {
+                method: 'DELETE',
+            });
+
+            if (result) {
+                showAlert('Room deleted successfully', 'success');
+                loadRooms();
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAdminAuth()) return;
+            loadHotelsForFilter();
+            loadRooms();
+        });
+    </script>
+</body>
+</html>

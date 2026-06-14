@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Opal Haven Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="sidebar-header">
+                    <h2 class="text-center">Opal Haven</h2>
+                    <p class="text-center text-muted">Admin Panel</p>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dashboard.html">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="hotels.html">
+                            <i class="bi bi-building"></i> Hotels
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="rooms.html">
+                            <i class="bi bi-door-closed"></i> Rooms
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="bookings.html">
+                            <i class="bi bi-calendar-check"></i> Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="users.html">
+                            <i class="bi bi-people"></i> Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reviews.html">
+                            <i class="bi bi-star"></i> Reviews
+                        </a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <button class="nav-link btn btn-link" onclick="logout()">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 col-lg-10 px-md-4 content">
+                <!-- Top bar -->
+                <div class="topbar d-flex justify-content-between align-items-center">
+                    <h1>Dashboard</h1>
+                    <div class="admin-info">
+                        <span id="admin-name">Admin</span>
+                    </div>
+                </div>
+
+                <!-- Alert container -->
+                <div id="alertContainer"></div>
+
+                <!-- Stat cards -->
+                <div class="row mt-4">
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #e7f3ff;">
+                                <i class="bi bi-building" style="color: #0066cc;"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Total Hotels</p>
+                                <h3 class="stat-value" id="totalHotels">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #fff4e6;">
+                                <i class="bi bi-door-closed" style="color: #ff9800;"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Total Rooms</p>
+                                <h3 class="stat-value" id="totalRooms">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #f3e5f5;">
+                                <i class="bi bi-calendar-check" style="color: #9c27b0;"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Total Bookings</p>
+                                <h3 class="stat-value" id="totalBookings">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3 mb-4">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: #e8f5e9;">
+                                <i class="bi bi-currency-dollar" style="color: #4caf50;"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Total Revenue</p>
+                                <h3 class="stat-value" id="totalRevenue">$0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts section -->
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bookings by Status</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span>Pending: <strong id="statusPending">0</strong></span>
+                                    <span>Confirmed: <strong id="statusConfirmed">0</strong></span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Cancelled: <strong id="statusCancelled">0</strong></span>
+                                    <span>Completed: <strong id="statusCompleted">0</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Quick Stats</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span>Total Users: <strong id="totalUsers">0</strong></span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Admin Users: <strong id="totalAdmins">0</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent bookings -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Recent Bookings</h5>
+                                <a href="bookings.html" class="btn btn-sm btn-primary">View All</a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="recentBookingsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Booking ID</th>
+                                            <th>Guest Name</th>
+                                            <th>Hotel</th>
+                                            <th>Room</th>
+                                            <th>Check-in</th>
+                                            <th>Check-out</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted py-3">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        // Missing Helper Function: Formats currency values cleanly
+        function formatCurrency(amount) {
+            return '$' + parseFloat(amount).toFixed(2);
+        }
+
+        // Load dashboard data
+        async function loadDashboard() {
+    console.log('Loading dashboard initialized...');
+    const tbody = document.querySelector('#recentBookingsTable tbody');
+    
+    // SAFETY NET: Force-stop the loading display after 2.5 seconds no matter what
+    const fallbackTimeout = setTimeout(() => {
+        if (tbody && tbody.innerHTML.includes('Loading...')) {
+            console.warn('Backend took too long! Force-killing the loading state.');
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-warning py-3"><i class="bi bi-exclamation-triangle-fill"></i> Connection timeout. Is your backend server running on port 8000?</td></tr>';
+        }
+    }, 2500);
+
+    try {
+        // 1. Fetch data from your Laravel backend
+        const data = await apiRequest('/admin/dashboard');
+        
+        // Clear our safety net timer since the data arrived!
+        clearTimeout(fallbackTimeout);
+        
+        if (!data) {
+            console.error('Failed to load dashboard data from API');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger py-3">Authentication failed or empty response.</td></tr>';
+            return;
+        }
+
+        console.log('Dashboard data received successfully:', data);
+        const stats = data.stats || data;
+
+        // 2. Update stat card values safely
+        if (document.getElementById('totalHotels')) document.getElementById('totalHotels').textContent = stats.total_hotels ?? stats.hotels_count ?? 0;
+        if (document.getElementById('totalRooms')) document.getElementById('totalRooms').textContent = stats.total_rooms ?? stats.rooms_count ?? 0;
+        if (document.getElementById('totalBookings')) document.getElementById('totalBookings').textContent = stats.total_bookings ?? stats.bookings_count ?? 0;
+        if (document.getElementById('totalUsers')) document.getElementById('totalUsers').textContent = stats.total_users ?? stats.users_count ?? 0;
+        if (document.getElementById('totalRevenue')) document.getElementById('totalRevenue').textContent = formatCurrency(stats.total_revenue ?? stats.total_earnings ?? 0);
+
+        // 3. Update booking status counts safely
+        const statusCounts = data.bookings_by_status || stats.bookings_by_status || {};
+        if (document.getElementById('statusPending')) document.getElementById('statusPending').textContent = statusCounts.pending || 0;
+        if (document.getElementById('statusConfirmed')) document.getElementById('statusConfirmed').textContent = statusCounts.confirmed || 0;
+        if (document.getElementById('statusCancelled')) document.getElementById('statusCancelled').textContent = statusCounts.cancelled || 0;
+        if (document.getElementById('statusCompleted')) document.getElementById('statusCompleted').textContent = statusCounts.completed || 0;
+
+        if (document.getElementById('totalAdmins')) {
+            document.getElementById('totalAdmins').textContent = data.total_admins ?? 1;
+        }
+
+        // 4. Update Recent Bookings Table
+        if (!tbody) return;
+        tbody.innerHTML = ''; 
+
+        const bookingsList = data.recent_bookings || [];
+        if (bookingsList.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-3">No bookings yet</td></tr>';
+            return;
+        }
+
+        bookingsList.forEach(booking => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>#${booking.id}</td>
+                <td>${booking.user?.name || '-'}</td>
+                <td>${booking.room?.hotel?.name || booking.hotel?.name || '-'}</td>
+                <td>${booking.room?.name || '-'}</td>
+                <td>${booking.check_in_date ? formatDate(booking.check_in_date) : '-'}</td>
+                <td>${booking.check_out_date ? formatDate(booking.check_out_date) : '-'}</td>
+                <td>${formatCurrency(booking.total_price || 0)}</td>
+                <td>${typeof getStatusBadge === 'function' ? getStatusBadge(booking.status) : booking.status}</td>
+            `;
+            tbody.appendChild(row);
+        });
+
+    } catch (error) {
+        clearTimeout(fallbackTimeout);
+        console.error('An error crashed the dashboard renderer:', error);
+        if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger py-3">Error loading metrics dashboard.</td></tr>';
+    }
+}
+
+        // ─── Boot — missing DOMContentLoaded was causing dashboard to never load ───
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAdminAuth()) return;
+            initializeAdminHeader();
+            loadDashboard();
+        });
+    </script>
+</body>
+</html>

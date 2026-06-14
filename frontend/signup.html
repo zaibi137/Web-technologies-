@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup | Opal Haven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { min-height: 100vh; display: flex; flex-direction: column; background: #020617; }
+      .page-bg {
+        position: fixed; inset: 0; z-index: 0;
+        background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #020617 100%);
+      }
+      .page-bg::before {
+        content: ''; position: absolute; inset: 0;
+        background:
+          radial-gradient(ellipse 70% 60% at 30% 20%, rgba(124,58,237,0.12) 0%, transparent 60%),
+          radial-gradient(ellipse 60% 50% at 80% 80%, rgba(45,212,191,0.10) 0%, transparent 60%);
+      }
+      header, main { position: relative; z-index: 1; }
+      .glass-panel {
+        background: rgba(15, 23, 42, 0.80);
+        backdrop-filter: blur(32px);
+        border: 1px solid rgba(124,58,237,0.15);
+        box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset;
+      }
+      .input-wrap { position: relative; }
+      .input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #475569; font-size: 1rem; pointer-events: none; }
+      .form-input {
+        width: 100%;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(100,116,139,0.30);
+        color: #f1f5f9; border-radius: 14px;
+        padding: 14px 18px 14px 44px; font-size: 0.95rem;
+        transition: all 0.25s; outline: none;
+      }
+      .form-input::placeholder { color: #475569; }
+      .form-input:focus {
+        background: rgba(124,58,237,0.06);
+        border-color: rgba(124,58,237,0.50);
+        box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+      }
+      .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+        color: white; border: none; border-radius: 14px;
+        padding: 15px 24px; font-size: 0.9rem; font-weight: 700;
+        letter-spacing: 0.04em; cursor: pointer; transition: all 0.25s;
+        box-shadow: 0 6px 24px rgba(124,58,237,0.35);
+      }
+      .submit-btn:hover {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        box-shadow: 0 8px 32px rgba(124,58,237,0.50);
+        transform: translateY(-1px);
+      }
+      .hotel-icon {
+        width: 60px; height: 60px;
+        background: linear-gradient(135deg, #7c3aed, #0d9488);
+        border-radius: 18px; display: flex; align-items: center;
+        justify-content: center; font-size: 1.6rem;
+        box-shadow: 0 8px 28px rgba(124,58,237,0.35);
+        margin-bottom: 1.5rem;
+      }
+      .tag {
+        display: inline-flex; align-items: center; gap: 5px;
+        background: rgba(124,58,237,0.10);
+        border: 1px solid rgba(124,58,237,0.25);
+        color: #a78bfa; font-size: 0.7rem; font-weight: 700;
+        letter-spacing: 0.12em; text-transform: uppercase;
+        padding: 4px 12px; border-radius: 999px;
+      }
+      .grad-text {
+        background: linear-gradient(135deg, #a78bfa, #2dd4bf);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      }
+      .divider { display: flex; align-items: center; gap: 12px; color: #334155; font-size: 0.78rem; margin: 20px 0; }
+      .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(100,116,139,0.20); }
+      main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    </style>
+  </head>
+  <body class="text-slate-100">
+    <div class="page-bg"></div>
+    <header class="sticky top-0 z-50 border-b border-slate-700/60 bg-slate-950/95 backdrop-blur-xl">
+      <nav class="flex max-w-full items-center justify-between px-6 py-4 lg:px-8">
+        <a href="index.html" class="text-3xl font-black uppercase tracking-[0.42em] text-teal-300">Opal Haven</a>
+        <div class="hidden items-center gap-6 md:flex">
+          <a href="index.html" class="text-lg font-medium text-slate-200 transition hover:text-teal-300">Home</a>
+          <a href="rooms.html" class="text-lg font-medium text-slate-200 transition hover:text-teal-300">Rooms</a>
+          <a href="checkout.html" class="text-lg font-medium text-slate-200 transition hover:text-teal-300">Checkout</a>
+          <a id="dashboard-link" href="dashboard.html" class="hidden text-lg font-medium text-slate-200 transition hover:text-teal-300">My Bookings</a>
+        </div>
+        <div class="hidden items-center gap-4 md:flex">
+          <span id="nav-user-welcome" class="hidden rounded-full bg-slate-900/80 px-4 py-2 text-sm text-slate-200"></span>
+          <a id="login-link" href="login.html" class="text-lg text-slate-200 transition hover:text-teal-300">Login</a>
+          <a id="signup-link" href="signup.html" class="rounded-full border border-teal-400 px-5 py-2 text-lg font-semibold text-teal-300 transition hover:bg-teal-300/10">Signup</a>
+          <button id="logout-button" class="hidden rounded-full bg-teal-400 px-5 py-2 text-lg font-semibold text-slate-950 transition hover:bg-teal-300">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="glass-panel rounded-[2rem] p-10 w-full" style="max-width:480px;">
+        <div class="hotel-icon">✨</div>
+        <div class="space-y-3 mb-6">
+          <div class="flex gap-2 mb-3"><span class="tag">✦ New Account</span></div>
+          <h1 class="text-3xl font-bold text-white">Join <span class="grad-text">Opal Haven</span> today</h1>
+          <p class="text-slate-400 text-sm leading-relaxed">Sign up to store your booking history and access your dashboard securely.</p>
+        </div>
+
+        <form id="signup-form" style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Full name</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input id="signup-name" type="text" placeholder="Your full name" class="form-input" required />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Email address</label>
+            <div class="input-wrap">
+              <span class="input-icon">✉</span>
+              <input id="signup-email" type="email" placeholder="name@example.com" class="form-input" required />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Password</label>
+            <div class="input-wrap">
+              <span class="input-icon">🔒</span>
+              <input id="signup-password" type="password" placeholder="••••••••" class="form-input" required />
+            </div>
+          </div>
+          <div style="padding-top:8px;">
+            <button type="submit" class="submit-btn">Create My Account →</button>
+          </div>
+        </form>
+        <div class="divider">or</div>
+        <p style="text-align:center;color:#94a3b8;font-size:0.875rem;">Already a member? <a href="login.html" style="color:#a78bfa;font-weight:700;text-decoration:none;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#a78bfa'">Login here →</a></p>
+      </section>
+    </main>
+
+    <script src="main.js"></script>
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const name     = document.getElementById('signup-name').value.trim();
+            const email    = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const btn      = document.querySelector('#signup-form button[type="submit"]');
+
+            if (!name || !email || !password) {
+                showMsg('Please fill in all fields.', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showMsg('Password must be at least 6 characters.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+
+            try {
+                // Register in Laravel
+                const res = await fetch('http://localhost:8000/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ name, email, password, password_confirmation: password }),
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    const errMsg = data.errors
+                        ? Object.values(data.errors).flat()[0]
+                        : (data.message || 'Registration failed.');
+                    showMsg(errMsg, 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Create account';
+                    return;
+                }
+
+                // Save token and user to localStorage
+                if (data.token) {
+                    localStorage.setItem('userToken', data.token);
+                }
+                if (data.user) {
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        id:       data.user.id,
+                        name:     data.user.name,
+                        email:    data.user.email,
+                        password: password,
+                    }));
+                }
+
+                showMsg('Account created successfully! Redirecting...', 'success');
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+
+            } catch (err) {
+                showMsg('Cannot connect to server. Make sure Laravel is running on port 8000.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Create account';
+            }
+        });
+
+        function showMsg(msg, type) {
+            let el = document.getElementById('signup-msg');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'signup-msg';
+                document.getElementById('signup-form').prepend(el);
+            }
+            el.className = 'rounded-2xl px-5 py-4 text-sm font-semibold mb-4 ' +
+                (type === 'error' ? 'bg-red-500/20 text-red-300 border border-red-500/30' : 'bg-teal-500/20 text-teal-300 border border-teal-500/30');
+            el.textContent = msg;
+        }
+    </script>
+  </body>
+</html>

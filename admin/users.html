@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users | Opal Haven Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="sidebar-header">
+                    <h2 class="text-center">Opal Haven</h2>
+                    <p class="text-center text-muted">Admin Panel</p>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="hotels.html"><i class="bi bi-building"></i> Hotels</a></li>
+                    <li class="nav-item"><a class="nav-link" href="rooms.html"><i class="bi bi-door-closed"></i> Rooms</a></li>
+                    <li class="nav-item"><a class="nav-link" href="bookings.html"><i class="bi bi-calendar-check"></i> Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="users.html"><i class="bi bi-people"></i> Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="reviews.html"><i class="bi bi-star"></i> Reviews</a></li>
+                    <li class="nav-item mt-5"><button class="nav-link btn btn-link" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</button></li>
+                </ul>
+            </nav>
+
+            <main class="col-md-9 col-lg-10 px-md-4 content">
+                <div class="topbar d-flex justify-content-between align-items-center">
+                    <h1>Registered Users</h1>
+                </div>
+
+                <div id="alertContainer" class="mt-3"></div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">All Users</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="6" class="text-center text-muted py-3">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        /**
+         * READ - Fetch and render user rows safely
+         */
+        async function loadUsers() {
+            console.log('Initializing user data fetch...');
+            const tbody = document.querySelector('#usersTable tbody');
+            if (!tbody) return;
+
+            // SAFETY NET: Force-stop the loading display after 2.5 seconds no matter what
+            const fallbackTimeout = setTimeout(() => {
+                if (tbody.innerHTML.includes('Loading...')) {
+                    console.warn('Backend connection taking too long. Forcing loop break.');
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-warning py-3"><i class="bi bi-exclamation-triangle-fill"></i> Request timeout. Verify that your Laravel server is serving API requests.</td></tr>';
+                }
+            }, 2500);
+
+            try {
+                // Fetch from your users list endpoint
+                const response = await apiRequest('/admin/users');
+                console.log("Users raw API response payload:", response);
+                
+                // Clear the safety net immediately since a response arrived!
+                clearTimeout(fallbackTimeout);
+                tbody.innerHTML = ''; 
+
+                if (!response) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-3">Failed to load data. Invalid token or unauthorized request.</td></tr>';
+                    return;
+                }
+
+                // BULLETPROOF EXTRACTION: Handle response, response.data, or paginator arrays
+                let usersArray = [];
+                if (Array.isArray(response)) {
+                    usersArray = response;
+                } else if (response.success && Array.isArray(response.data)) {
+                    usersArray = response.data;
+                } else if (response.data && Array.isArray(response.data.data)) {
+                    // Falls back here if Laravel's default pagination wrapper is bypassed
+                    usersArray = response.data.data;
+                } else if (response.data && Array.isArray(response.data)) {
+                    usersArray = response.data;
+                }
+
+                if (usersArray.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">No user records found in the system database.</td></tr>';
+                    return;
+                }
+
+                // Render out rows
+                usersArray.forEach(user => {
+                    const row = document.createElement('tr');
+                    
+                    let roleBadge = '<span class="badge bg-secondary">User</span>';
+                    if (user.role === 'admin') {
+                        roleBadge = '<span class="badge bg-danger">Admin</span>';
+                    } else if (user.role === 'manager') {
+                        roleBadge = '<span class="badge bg-warning text-dark">Manager</span>';
+                    }
+
+                    const joinedDate = user.created_at ? new Date(user.created_at).toLocaleDateString() : '-';
+                    const statusBadge = (user.is_active == 1 || user.is_active === true || user.is_active === undefined)
+                        ? '<span class="badge bg-success">Active</span>' 
+                        : '<span class="badge bg-danger">Inactive</span>';
+
+                    row.innerHTML = `
+                        <td>#${user.id}</td>
+                        <td><strong>${user.name || 'N/A'}</strong></td>
+                        <td>${user.email || '-'}</td>
+                        <td>${roleBadge}</td>
+                        <td>${joinedDate}</td>
+                        <td>${statusBadge}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+            } catch (error) {
+                clearTimeout(fallbackTimeout);
+                console.error("Critical rendering error:", error);
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-3">A JavaScript error intercepted the rendering pipeline. Check F12 Console.</td></tr>';
+            }
+        }
+
+        // Initialize script on load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof checkAdminAuth === 'function' && !checkAdminAuth()) return;
+            loadUsers();
+        });
+    </script>
+</body>
+</html>

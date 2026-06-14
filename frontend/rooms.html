@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rooms | Opal Haven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { 
+        background: radial-gradient(circle at top, rgba(20, 184, 166, 0.08), transparent 45%), linear-gradient(180deg, #030712, #0b1329); 
+      }
+      .glass-panel { 
+        background: rgba(15, 23, 42, 0.65); 
+        backdrop-filter: blur(24px); 
+        -webkit-backdrop-filter: blur(24px);
+      }
+      .room-card-glow:hover {
+        box-shadow: 0 20px 40px -15px rgba(20, 184, 166, 0.15);
+        border-color: rgba(45, 212, 191, 0.4);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen text-slate-100 font-sans antialiased">
+    
+    <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
+      <nav class="flex max-w-7xl mx-auto items-center justify-between px-6 py-4 lg:px-8">
+        <a href="index.html" class="text-2xl font-black uppercase tracking-[0.4em] text-teal-400 transition hover:text-teal-300">Opal Haven</a>
+        <div class="hidden items-center gap-8 md:flex">
+          <a href="index.html" class="text-sm font-medium text-slate-400 transition hover:text-teal-400">Home</a>
+          <a href="rooms.html" class="text-sm font-medium text-teal-400 border-b-2 border-teal-400 pb-1">Rooms</a>
+          <a href="checkout.html" class="text-sm font-medium text-slate-400 transition hover:text-teal-400">Checkout</a>
+          <a id="dashboard-link" href="dashboard.html" class="hidden text-sm font-medium text-slate-400 transition hover:text-teal-400">My Bookings</a>
+        </div>
+        <div class="hidden items-center gap-4 md:flex">
+          <span id="nav-user-welcome" class="hidden rounded-full bg-slate-900/90 border border-slate-800 px-4 py-2 text-sm text-slate-300"></span>
+          <a id="login-link" href="login.html" class="text-sm font-medium text-slate-300 transition hover:text-white">Login</a>
+          <a id="signup-link" href="signup.html" class="rounded-full border border-teal-500/40 bg-teal-500/5 px-5 py-2 text-sm font-semibold text-teal-300 transition hover:bg-teal-400 hover:text-slate-950">Signup</a>
+          <button id="logout-button" class="hidden rounded-full bg-teal-400 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-teal-300">Logout</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-16 lg:px-8">
+      
+      <section class="glass-panel rounded-3xl border border-slate-800/80 p-8 lg:p-12 shadow-2xl">
+        <div class="flex flex-col gap-8 xl:flex-row xl:items-center xl:justify-between">
+          
+          <div class="max-w-xl">
+            <span class="text-xs font-bold uppercase tracking-[0.35em] text-teal-400 bg-teal-400/10 px-3 py-1 rounded-full">Curated Collection</span>
+            <h1 class="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+              Find your sanctuary.
+            </h1>
+            <p class="mt-3 text-slate-400 leading-relaxed">
+              Discover a tailored selection of boutique spaces designed for absolute comfort, ultimate privacy, and unforgettable moments.
+            </p>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto shrink-0">
+            <div class="relative w-full sm:w-64">
+              <input id="search-query" type="text" placeholder="Search suites or keywords..." class="w-full rounded-xl border border-slate-800 bg-slate-950/60 px-5 py-3.5 text-slate-100 placeholder-slate-500 outline-none transition focus:border-teal-500 focus:ring-1 focus:ring-teal-500" />
+            </div>
+            <div class="relative w-full sm:w-60">
+              <select id="price-filter" class="w-full rounded-xl border border-slate-800 bg-slate-950/60 px-5 py-3.5 text-slate-100 outline-none transition focus:border-teal-500 focus:ring-1 focus:ring-teal-500 appearance-none cursor-pointer">
+                <option value="all">All Available Prices</option>
+                <option value="400">Under 400 / night</option>
+                <option value="500">Under 500 / night</option>
+                <option value="600">Under 600 / night</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="mt-16 grid gap-10" id="rooms-grid">
+        
+        <div class="room-card-glow glass-panel flex flex-col lg:flex-row rounded-3xl overflow-hidden border border-slate-800/60 transition-all duration-300 group">
+          
+          <div class="relative w-full lg:w-1/2 h-64 sm:h-80 lg:h-auto min-h-[340px] overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80" alt="Opal Haven Luxury Suite" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-slate-950/90"></div>
+          </div>
+
+          <div class="flex flex-col justify-between p-8 lg:p-12 w-full lg:w-1/2 space-y-6">
+            <div>
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-teal-400">Premium Experience</span>
+                <div class="flex items-center gap-1 text-amber-400 text-sm">
+                  ★ <span class="text-slate-300 font-medium">4.9 (120+ reviews)</span>
+                </div>
+              </div>
+              <h2 class="mt-3 text-2xl lg:text-3xl font-bold text-white tracking-tight">The Obsidian Sanctuary</h2>
+              <p class="mt-3 text-slate-400 text-sm sm:text-base leading-relaxed">
+                Indulge in dramatic panoramic skylines matched with minimalist aesthetics. This master suite features architectural concrete finishes, personalized climate zones, and an expansive spa bath designed for deep relaxation.
+              </p>
+              
+              <div class="mt-6 flex flex-wrap gap-2">
+                <span class="rounded-md bg-slate-900/90 border border-slate-800 px-3 py-1 text-xs font-medium text-slate-300">King Bed</span>
+                <span class="rounded-md bg-slate-900/90 border border-slate-800 px-3 py-1 text-xs font-medium text-slate-300">Ocean View</span>
+                <span class="rounded-md bg-slate-900/90 border border-slate-800 px-3 py-1 text-xs font-medium text-slate-300">Private Balcony</span>
+                <span class="rounded-md bg-slate-900/90 border border-slate-800 px-3 py-1 text-xs font-medium text-slate-300">Free Wi-Fi</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-6 border-t border-slate-800/80 gap-4">
+              <div>
+                <p class="text-xs text-slate-400 uppercase tracking-wider">Price per night</p>
+                <p class="text-2xl font-black text-white">$450 <span class="text-sm font-normal text-slate-400">/ night</span></p>
+              </div>
+              <button class="rounded-xl bg-teal-400 px-6 py-3 text-sm font-bold text-slate-950 transition-all hover:bg-teal-300 hover:shadow-[0_0_20px_rgba(45,212,191,0.4)] active:scale-95">
+                Reserve Suite
+              </button>
+            </div>
+          </div>
+
+        </div>
+        </section>
+    </main>
+
+    <script src="main.js"></script>
+  </body>
+</html>
