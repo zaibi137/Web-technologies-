@@ -77,6 +77,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Booking Status Control
         Route::patch('/bookings/{booking}/status', [BookingController::class, 'updateStatus']);
+        Route::delete('/bookings/{booking}', [BookingController::class, 'destroy']);
 
         // Review Moderation
         Route::get('/reviews', [ReviewController::class, 'index']);

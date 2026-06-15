@@ -52,11 +52,9 @@ class BookingController extends Controller
      */
     public function store(StoreBookingRequest $request): JsonResponse
     {
-        // Calculate total price — fetch room directly by room_id
-        $room = \App\Models\Room::find($request->room_id);
-        if (!$room) {
-            return response()->json(['message' => 'Room not found'], 404);
-        }
+        // Calculate total price
+        $room = $request->user()->bookings()->first()?->room ?? 
+                \App\Models\Room::find($request->room_id);
         
         $nights = \Carbon\Carbon::parse($request->check_out_date)
             ->diffInDays(\Carbon\Carbon::parse($request->check_in_date));
@@ -105,6 +103,15 @@ class BookingController extends Controller
             'message' => 'Booking cancelled successfully',
             'booking' => $booking,
         ], 200);
+    }
+
+    /**
+     * Delete booking (admin only)
+     */
+    public function destroy(Booking $booking): JsonResponse
+    {
+        $booking->delete();
+        return response()->json(['message' => 'Booking deleted successfully'], 200);
     }
 
     /**

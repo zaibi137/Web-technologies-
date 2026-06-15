@@ -162,7 +162,7 @@
                     '<td>' + formatDate(booking.check_out_date) + '</td>' +
                     '<td>' + formatCurrency(booking.total_price) + '</td>' +
                     '<td>' + getStatusBadge(booking.status) + '</td>' +
-                    '<td><button class="btn btn-sm btn-info" onclick="viewBooking(' + booking.id + ')"><i class="bi bi-eye"></i> Details</button></td>';
+                    '<td><button class="btn btn-sm btn-info me-1" onclick="viewBooking(' + booking.id + ')"><i class="bi bi-eye"></i> Details</button><button class="btn btn-sm btn-danger" onclick="deleteBooking(' + booking.id + ')"><i class="bi bi-trash"></i></button></td>';
                 tbody.appendChild(row);
             });
         }
@@ -214,6 +214,15 @@
             if (result) {
                 showAlert('Booking status updated successfully', 'success');
                 bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
+                loadBookings();
+            }
+        }
+
+        async function deleteBooking(bookingId) {
+            if (!confirm('Are you sure you want to delete booking #' + bookingId + '? This cannot be undone.')) return;
+            const result = await apiRequest('/bookings/' + bookingId, { method: 'DELETE' });
+            if (result !== null) {
+                showAlert('Booking #' + bookingId + ' deleted successfully.', 'success');
                 loadBookings();
             }
         }
